@@ -1,0 +1,33 @@
+00 = 00000
+01 = new
+10 = next
+11 = isr
+
+
+15 - iret2
+16 - iret3
+17 - pop2
+18 - ret2
+19 - int1
+20 - int2
+21 - int3
+
+
+(23~19)-NEXT_STATE(5)
+18-INTACK
+17-IFSET
+16-IFRESET
+(15-14)-DATAMUX(2)
+(13-12)-ARMUX(2)
+11-PCMUX
+10-MUX
+9-PCINC
+8-SP++
+7-SP--
+6-ZFPOP
+5-ZFLD
+4-INTLD
+3-MEMLD
+2-REGLD
+1-PCLD
+0-IRLD
