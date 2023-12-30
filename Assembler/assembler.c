@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
                     op2 = strtok(NULL,"\n\t\r ");
                     op3 = strtok(NULL,"\n\t\r ");
                     chch = (op1[0]-48)| ((op2[0]-48)<<3)|((op3[0]-48)<<6);  
-                    program[counter++] = 0x7000 + chch; 
+                    program[counter++] = 0x7000 + chch;    //0111 0000
                 }
                 else if (strcmp(token,"sub")==0)
                 {
@@ -186,6 +186,14 @@ int main(int argc, char *argv[])
                     op3 = strtok(NULL,"\n\t\r ");
                     chch = (op1[0]-48)| ((op2[0]-48)<<3)|((op3[0]-48)<<6);
                     program[counter++] = 0x7800 + chch;  //0111 1000
+                }
+                else if (strcmp(token,"shl")==0) //----------------- SHL -------------------------------
+                {
+                    op1 = strtok(NULL,"\n\t\r ");    
+                    op2 = strtok(NULL,"\n\t\r ");
+                    op3 = strtok(NULL,"\n\t\r ");
+                    chch = (op1[0]-48)| ((op2[0]-48)<<3)|((op3[0]-48)<<6);  
+                    program[counter++] = 0x7A00 + chch;  //0111 1010
                 }                        
                 else if (strcmp(token,"not")==0)
                 {
