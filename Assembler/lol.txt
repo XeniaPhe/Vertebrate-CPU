@@ -1,2 +1,0 @@
-.code
-ldi 0 0xffff

@@ -1,0 +1,12 @@
+7F8 => 7-Segment 1's Digit	 	=> 011111111000
+7F9 => 7-Segment 10's Digit	 	=> 011111111001
+7FA => 7-Segment 100's Digit	 	=> 011111111010
+7FB => 7-Segment 1000's Digit	 	=> 011111111011
+7FC => 7-Segment Status Register 	=> 011111111100
+7FD => Timer			 	=> 011111111101
+7FE => Switchboard Data Register	=> 011111111110
+7FF => Switchboard Status Register	=> 011111111111
+800 => PB1 Data Register	 	=> 100000000000
+801 => PB1 Status Register	 	=> 100000000001
+802 => PB2 Data Register		=> 100000000010
+803 => PB2 Status Register		=> 100000000011
