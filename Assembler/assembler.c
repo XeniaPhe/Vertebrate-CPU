@@ -50,13 +50,13 @@ int main(int argc, char *argv[])
 // A label is a symbol which mark a location within the code section. In the example 
 // program above, the strings "lpp", "loop" and "lp1" are labels. 
 // In reptile, labels are used by jump, jz and ldi instructions.  
-    struct label_or_variable labeltable[50]; //there can be 50 labels at most in our programs
+    struct label_or_variable labeltable[300]; //there can be 50 labels at most in our programs
     int nooflabels = 0;                       //number of labels encountered during assembly.
 
  // A variable is a symbol which mark a location within the data section. In the example 
 // program above, the strings "", "" and "" are variables.
 // In reptile, variables are used by ldi instructions.
-    struct label_or_variable variabletable[50]; // The list of variables in .data section and their locations.
+    struct label_or_variable variabletable[100]; // The list of variables in .data section and their locations.
     int noofvariables = 0;    //number of jumps encountered during assembly. 
 
 // Jump instructions cannot be assembled readily because we may not know the value of 
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
 // that jump instruction appear below that jump instruction. This is the situation 
 // with the label "loop" in the example program above. Hence, the location of jump 
 // instructions must be stored.
-    struct label_or_variable jumptable[100]; //There can be at most 100 jumps
+    struct label_or_variable jumptable[300]; //There can be at most 100 jumps
     int noofjumps=0;                        //number of jump instructions encountered during assembly.    
 
 
@@ -74,16 +74,18 @@ int main(int argc, char *argv[])
 //a label may not be known when we encounter a ldi instruction which uses that label.
 //Hence, the location of the ldi instructions must be kept, and these instructions must be 
 //modified when we discover the address of the label or variable that it uses.
-    struct label_or_variable lditable[100];
+    struct label_or_variable lditable[300];
     int noofldis=0;
 
-    fp = fopen(argv[1],"r");    //first command line argument is the name of the program
+    fp = fopen("vertebrate.txt","r");    //first command line argument is the name of the program
 
     if (fp != NULL)
     {
         while(fgets(line,sizeof line,fp)!= NULL)  //skip till .code section
         {
             token=strtok(line,"\n\t\r ");
+            if(token == NULL)
+                continue;
             if (strcmp(token,".code")==0 )
                 break;
         }
