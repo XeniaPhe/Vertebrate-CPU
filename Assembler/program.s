@@ -4,60 +4,10 @@ MAIN
     cli
     ldi 7 0x0FFF
 
-    ldi 0 0x0001
-    mov 1 0
-    shl 1 1 0
-    push 1
-    shl 1 1 0
-    push 1
-    shl 1 1 0
-    push 1
-    shl 1 1 0
-    push 1
-    shl 1 1 0
-    push 1
 inf
     jmp inf
-
-PROC_division_and_modulo
-    push 2
-    push 3
-    push 4
-    push 5
-
-    mov 2 1
-    mov 1 0
-
-    ldi 3 0x0000
-    ldi 4 0x000F
-    ldi 5 0x0001
-    
-div_loop
-    shl 0 2 4
-    call PROC_compare
-    sub 0 5 0
-    jz div_check
-
-    shl 0 2 4
-    sub 1 1 0
-
-    shl 0 5 4
-    or 3 3 0
-div_check
-    dec 4
-    jz END_division_and_modulo
-    mov 1 1
-    jz END_division_and_modulo
-    jmp div_loop
-
-END_division_and_modulo
-    mov 0 3
-    pop 5
-    pop 4
-    pop 3
-    pop 2
-RET_division_and_modulo
-ret
+END_PROGRAM
+cli
 
 PROC_compare
     push 2
@@ -96,4 +46,37 @@ END_compare
     pop 3
     pop 2
 RET_compare
+ret
+
+PROC_clz
+    mov 0 0
+    jz is_zero
+    jmp continue_clz
+
+is_zero
+    ldi 0 0x0010
+    jmp RET_clz
+
+continue_clz
+    push 2
+    push 3
+
+    ldi 1 0x000F
+    ldi 2 0x0001
+    jmp clz_body
+
+clz_loop
+    dec 1
+    jz END_clz
+clz_body
+    shl 3 2 1
+    and 3 3 0
+    jz clz_loop
+
+END_clz
+    ldi 3 0x000F
+    sub 0 3 1
+    pop 3
+    pop 2
+RET_clz
 ret
