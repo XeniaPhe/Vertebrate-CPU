@@ -77,13 +77,14 @@ int main(int argc, char *argv[])
     struct label_or_variable lditable[300];
     int noofldis=0;
 
-    fp = fopen("vertebrate.txt","r");    //first command line argument is the name of the program
+    fp = fopen("program.s","r");
 
     if (fp != NULL)
     {
         while(fgets(line,sizeof line,fp)!= NULL)  //skip till .code section
         {
             token=strtok(line,"\n\t\r ");
+
             if(token == NULL)
                 continue;
             if (strcmp(token,".code")==0 )
@@ -226,8 +227,8 @@ int main(int argc, char *argv[])
                 else if (strcmp(token,"push")==0)
                 {
                     op1 = strtok(NULL,"\n\t\r ");
-                    ch = ((op1[0]-48) << 6);
-                    program[counter++] = 0x8000 + ch;
+                    chch = ((op1[0]-48) << 6);
+                    program[counter++] = 0x8000 + chch;
                 }
                 else if (strcmp(token,"pop")==0)
                 {
@@ -299,6 +300,7 @@ int main(int argc, char *argv[])
         while(fgets(line,sizeof line,fp)!= NULL)
         {
             token=strtok(line,"\n\t\r ");
+
             if (strcmp(token,".code")==0 )  //go till the .code segment
                 break;
             else if (token[strlen(token)-1]==':')
@@ -376,14 +378,12 @@ int main(int argc, char *argv[])
             printf("%d %s\n", lditable[i].location, lditable[i].name);    
         printf("\n");
 
+        printf("labels : %d\n", nooflabels);
+        printf("jumps : %d\n", noofjumps);
+        printf("ldis : %d\n",noofldis);
         fclose(fp);
 
-        op1 = (char*)malloc(strlen(argv[1]) + 1);
-        strcpy(op1, argv[1]);
-        op1 = strtok(op1, ".");
-        fp = fopen(op1,"w");
-
-        free(op1);
+        fp = fopen("program","w");
 
         fprintf(fp,"v2.0 raw\n");
         for (i=0;i<counter+dataarea;i++)

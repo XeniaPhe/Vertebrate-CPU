@@ -1,15 +1,12 @@
 .data
-    IDT : 0x07F0
-
-    DSP : 0x07F8
-    SWB : 0x07FE
-    PB1 : 0x800
-    PB2 : 0x802
-    
-    result : .space 1
-    operation : .space 1
-    prev_number : .space 1
-
+    IDT: 0x07F0
+    DSP: 0x07F8
+    SWB: 0x07FE
+    PB1: 0x800
+    PB2: 0x802
+    result: .space 1
+    operation: .space 1
+    prev_number: .space 1
 .code
 MAIN
     cli
