@@ -80,3 +80,71 @@ END_clz
     pop 2
 RET_clz
 ret
+
+PROC_division_and_modulo
+    mov 1 1
+    jz RET_division_and_modulo
+
+    push 2
+    mov 2 0
+    call PROC_compare
+    jz div_equal
+    inc 0
+    jz zero_quotient
+    jmp div_loop_prep
+
+div_equal
+    ldi 0 0x0001
+    ldi 1 0x0000
+    pop 2
+    jmp RET_division_and_modulo
+
+zero_quotient
+    ldi 0 0x0000
+    mov 1 2
+    pop 2
+    jmp RET_division_and_modulo
+
+div_loop_prep
+    push 3
+    push 4
+    push 5
+
+    mov 3 1
+    mov 0 2
+    call PROC_clz
+    mov 4 0
+    mov 0 1
+    call PROC_clz
+    mov 1 3
+    sub 3 0 4
+    mov 0 2
+    ldi 2 0x0000
+    ldi 4 0x0001
+    shl 1 1 3
+    //u=0,v=1,q=2,k=3,one=4
+
+div_loop
+    shl 2 2 4
+    mov 5 0
+    call PROC_compare
+    inc 0
+    jz div_loop_1
+    sub 5 5 1
+    inc 2
+
+div_loop_1
+    mov 6 1
+    mov 0 1
+    call PROC_clz
+    
+
+
+
+
+END_division_and_modulo
+    pop 5
+    pop 4
+    pop 3
+RET_division_and_modulo
+ret
