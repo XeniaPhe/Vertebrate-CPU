@@ -281,80 +281,6 @@ PROC_multiply_by_ten_and_accumulate
 RET_multiply_by_ten_and_accumulate
 ret
 
-PROC_unsigned_div_and_mod
-    mov 1 1
-    jz div_by_zero
-
-    push 2
-    mov 2 0
-    call PROC_unsigned_cmp
-    mov 0 0
-    jz div_equal
-    inc 0
-    jz zero_quotient
-    jmp div_loop_prep
-
-div_by_zero
-    ldi 0 0xFFFF
-    ldi 1 0xFFFF
-    jz RET_unsigned_div_and_mod
-
-div_equal
-    ldi 0 0x0001
-    ldi 1 0x0000
-    pop 2
-    jmp RET_unsigned_div_and_mod
-
-zero_quotient
-    ldi 0 0x0000
-    mov 1 2
-    pop 2
-    jmp RET_unsigned_div_and_mod
-
-div_loop_prep
-    push 3
-    push 4
-    push 5
-
-    mov 3 1
-    mov 0 2
-    call PROC_clz
-    mov 4 0
-    mov 0 3     
-    call PROC_clz
-    mov 1 2     
-    sub 2 0 4
-    mov 0 3
-    shl 0 0 2
-
-    ldi 3 0x0000
-    ldi 4 0x0001
-
-div_loop
-    shl 3 3 4
-    mov 5 0
-    call PROC_unsigned_cmp
-    dec 0
-    jz div_loop_1
-    sub 1 1 5
-    inc 3
-div_loop_1
-    mov 0 5
-    shr 0 0 4
-    dec 2
-    ldi 5 0x8000
-    and 5 5 2
-    jz div_loop
-
-END_unsigned_div_and_mod
-    mov 0 3
-    pop 5
-    pop 4
-    pop 3
-    pop 2
-RET_unsigned_div_and_mod
-ret
-
 PROC_unsigned_cmp
     push 2
     push 3
@@ -394,37 +320,87 @@ END_unsigned_cmp
 RET_unsigned_cmp
 ret
 
-PROC_clz
-    mov 0 0
-    jz is_zero
-    jmp continue_clz
-
-is_zero
-    ldi 0 0x0010
-    jmp RET_clz
-
-continue_clz
+PROC_double_dabble
     push 2
     push 3
+    push 4
+    push 5
+    push 6
 
-    ldi 1 0x000F
-    ldi 2 0x0001
-    jmp clz_body
+    mov 1 0
+    ldi 0 0x0000
+    clz 2 1
+    ldi 3 0x0010
+    sub 2 3 2
+    ldi 3 0x0000
 
-clz_loop
-    dec 1
-    jz END_clz
-clz_body
-    shl 3 2 1
-    and 3 3 0
-    jz clz_loop
+dd_loop
+    sub 4 2 3
+    jz END_double_dabble
 
-END_clz
-    ldi 3 0x000F
-    sub 0 3 1
+check_bcd_3
+    ldi 4 0x000F
+    and 5 4 0
+    ldi 4 0x0004
+    sub 4 4 5
+    ldi 6 0x8000
+    and 6 6 4
+    jz check_bcd_2
+    ldi 4 0x0003
+    add 0 0 4
+
+check_bcd_2
+    ldi 4 0x00F0
+    and 5 4 0
+    ldi 4 0x0040
+    sub 4 4 5
+    ldi 6 0x8000
+    and 6 6 4
+    jz check_bcd_1
+    ldi 4 0x0030
+    add 0 0 4
+
+check_bcd_1
+    ldi 4 0x0F00
+    and 5 4 0
+    ldi 4 0x0400
+    sub 4 4 5
+    ldi 6 0x8000
+    and 6 6 4
+    jz check_bcd_0
+    ldi 4 0x0300
+    add 0 0 4
+
+check_bcd_0
+    ldi 4 0xF000
+    and 5 4 0
+    ldi 4 0x4000
+    sub 4 4 5
+    ldi 6 0x8000
+    and 6 6 4
+    jz check_bcd_0
+    ldi 4 0x3000
+    add 0 0 4
+
+    ldi 4 0x0001
+    shl 0 0 4
+    sub 5 2 3
+    dec 5
+    inc 3
+    shl 6 4 5
+    and 5 6 1
+    mov 5 5
+    jz dd_loop
+    inc 0
+    jmp dd_loop
+
+END_double_dabble
+    pop 6
+    pop 5
+    pop 4
     pop 3
     pop 2
-RET_clz
+RET_double_dabble
 ret
 
 PROC_display
@@ -437,23 +413,10 @@ PROC_display
 
     ldi 2 DSP
     ld 2 2
-    ldi 3 0x0004
     
-disp_loop
-    ldi 1 0x000A
-    call PROC_unsigned_div_and_mod
+    call PROC_double_dabble
 
-    mov 4 0
-    mov 0 1
-    call PROC_map_to_seven_segment
-
-    st 2 0
-    mov 0 4
-
-    inc 2
-    dec 3
-    jz END_display
-    jmp disp_loop
+    
 
 END_display
     pop 4

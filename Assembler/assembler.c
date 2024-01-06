@@ -198,19 +198,13 @@ int main(int argc, char *argv[])
                     chch = (op1[0]-48)| ((op2[0]-48)<<3)|((op3[0]-48)<<6);  
                     program[counter++] = 0x7A00 + chch;  //0111 1010
                 }
-                else if (strcmp(token,"clz")==0) //----------------- SHL -------------------------------
+                else if (strcmp(token,"shr")==0) //----------------- SHL -------------------------------
                 {
-                    op1 = strtok(NULL,"\n\t\r ");
+                    op1 = strtok(NULL,"\n\t\r ");    
                     op2 = strtok(NULL,"\n\t\r ");
-                    chch = (op1[0]-48)| ((op2[0]-48)<<3);
+                    op3 = strtok(NULL,"\n\t\r ");
+                    chch = (op1[0]-48)| ((op2[0]-48)<<3)|((op3[0]-48)<<6);
                     program[counter++] = 0x7C00 + chch;  //0111 1100
-                }                          
-                else if (strcmp(token,"not")==0)
-                {
-                    op1 = strtok(NULL,"\n\t\r ");
-                    op2 = strtok(NULL,"\n\t\r ");
-                    ch = (op1[0]-48)| ((op2[0]-48)<<3);
-                    program[counter++] = 0x7E40 + ch;  //0111 1110 0100
                 }
                 else if (strcmp(token,"mov")==0)
                 {
@@ -219,6 +213,14 @@ int main(int argc, char *argv[])
                     ch = (op1[0]-48)| ((op2[0]-48)<<3);
                     program[counter++] = 0x7E00 + ch;  //0111 1110 0000
                 }
+                else if (strcmp(token,"not")==0)
+                {
+                    op1 = strtok(NULL,"\n\t\r ");
+                    op2 = strtok(NULL,"\n\t\r ");
+                    ch = (op1[0]-48)| ((op2[0]-48)<<3);
+                    program[counter++] = 0x7E40 + ch;  //0111 1110 0100
+                }
+                
                 else if (strcmp(token,"inc")==0)
                 {
                     op1 = strtok(NULL,"\n\t\r ");
@@ -230,6 +232,13 @@ int main(int argc, char *argv[])
                     op1 = strtok(NULL,"\n\t\r ");
                     ch = (op1[0]-48)| ((op1[0]-48)<<3);
                     program[counter++] = 0x7EC0 + ch;       //0111 1110 1100
+                }
+                else if (strcmp(token,"clz")==0)
+                {
+                    op1 = strtok(NULL,"\n\t\r ");    
+                    op2 = strtok(NULL,"\n\t\r ");
+                    ch = (op1[0]-48)| ((op1[0]-48)<<3);
+                    program[counter++] = 0x7F00 + ch;       //0111 1111 0000
                 }
                 else if (strcmp(token,"push")==0)
                 {
