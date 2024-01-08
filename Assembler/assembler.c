@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
                 {
                     op1 = strtok(NULL,"\n\t\r ");    
                     op2 = strtok(NULL,"\n\t\r ");
-                    ch = (op1[0]-48)| ((op1[0]-48)<<3);
+                    ch = (op1[0]-48)| ((op2[0]-48)<<3);
                     program[counter++] = 0x7F00 + ch;       //0111 1111 0000
                 }
                 else if (strcmp(token,"push")==0)
