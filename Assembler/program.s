@@ -6,6 +6,7 @@
     DSP: 0x07FE
     data_displayed: 0xFFFF
     timer: .space 1
+    lol: .space 16
     operation: .space 1
 .code
 MAIN
@@ -15,6 +16,7 @@ MAIN
     ld 0 0
     ldi 1 ISR_timer
     st 0 1
+    
 
     ldi 0 0x0000
 
@@ -28,16 +30,138 @@ MAIN
     ldi 4 0x0000
     ldi 5 0x0000
 
-    ldi 0 0x000F
-    ldi 1 0x000F
-    ldi 2 0x1101
-    push 2
-    call PROC_calculate
-    inc 7
+main_loop
+    ldi 0 PB2
+    ld 0 0
+    ld 0 0
+    mov 0 0
+    jz try_display_timer
+
+try_display_result
+    mov 0 5
+    jmp try_display
+
+try_display_timer
+    ldi 0 timer
+    ld 0 0
+
+try_display
+    ldi 1 data_displayed
+    ld 1 1
+    sub 1 1 0
+    jz poll_PB1
+    st 1 0
     call PROC_display
 
-inf
-    jmp inf
+poll_PB1
+    ldi 0 PB1
+    ld 0 0
+    ld 1 0
+    mov 1 1
+    jz main_loop
+    inc 0
+    ld 1 0
+    mov 1 1
+    jz main_loop
+    ldi 1 0x0000
+    st 0 1
+
+check_SWB
+    ldi 0 SWB
+    ld 0 0
+    ld 0 0
+    ldi 1 0x000F
+    sub 1 1 0
+    jz operator
+    dec 1
+    jz operator
+    dec 1
+    jz operator
+    dec 1
+    jz equals
+    dec 1
+    jz main_loop
+    dec 1
+    jz main_loop
+
+digit
+    mov 4 4
+    jz first_digit
+    ldi 1 0x0003
+    shl 1 2 1
+    ldi 6 0x0001
+    shl 6 2 6
+    add 2 6 1
+    add 2 2 0
+    mov 5 2
+    jmp main_loop
+
+first_digit
+    mov 2 0
+    mov 5 0
+    ldi 4 0x0001
+    jmp main_loop
+
+equals
+    mov 4 4
+    jz number_equals_1
+    ldi 6 operation
+    ld 6 6
+    mov 6 6
+    jz number_equals_2
+    mov 0 3
+    mov 1 2
+    call PROC_calculate
+    mov 3 0
+    mov 5 0
+    ldi 2 0x0000
+    ldi 4 0x0000
+    st 6 4
+    jmp main_loop
+
+number_equals_1
+    mov 5 3
+    ldi 1 operation
+    st 1 4
+    jmp main_loop
+
+number_equals_2
+    mov 3 2
+    ldi 2 0x0000
+    ldi 4 0x0000
+    jmp main_loop
+
+operator
+    ldi 6 operation
+    ld 1 6
+    mov 1 1
+    jz register_operator
+    mov 4 4
+    jz change_operator
+
+subcalculation
+    mov 6 0
+    mov 0 3
+    mov 1 2
+    call PROC_calculate
+    mov 3 0
+    mov 5 0
+    ldi 1 operation
+    st 1 6
+    ldi 2 0x0000
+    ldi 4 0x0000
+    jmp main_loop
+
+register_operator
+    st 6 0
+    mov 3 2
+    ldi 2 0x0000
+    ldi 4 0x0000
+    jmp main_loop
+
+change_operator
+    st 6 0
+    jmp main_loop
 
 END_PROGRAM
 cli
@@ -46,16 +170,15 @@ PROC_calculate
     push 2
     push 3
 
-    ldi 3 0x0002
-    add 3 3 7
-    ld 2 3
+    ldi 2 operation
+    ld 2 2
 
     ldi 3 0x000F
-    sub 2 3 2
+    sub 3 3 2
     jz addition
-    dec 2
+    dec 3
     jz subtraction
-    dec 2
+    dec 3
     jz multiplication
     jmp END_calculate
     
@@ -197,11 +320,12 @@ div_loop_prep
     
 div_loop
     shl 0 0 2
-    sub 6 3 1
-    and 6 6 5
-    jz div_loop_1
     inc 0
     sub 1 1 3
+    and 6 1 5
+    jz div_loop_1
+    dec 0
+    add 1 1 3
 div_loop_1
     shr 3 3 2
     dec 4
@@ -304,9 +428,6 @@ ret
 PROC_display
     push 2
     push 3
-
-    ldi 1 data_displayed
-    st 1 0
 
     ldi 1 0x000A
     call PROC_unsigned_div_and_mod

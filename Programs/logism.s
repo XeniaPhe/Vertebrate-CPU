@@ -6,6 +6,7 @@
     DSP: 0x07FE
     data_displayed: 0xFFFF
     timer: .space 1
+    lol: .space 16
     operation: .space 1
 .code
 MAIN
@@ -15,6 +16,7 @@ MAIN
     ld 0 0
     ldi 1 ISR_timer
     st 0 1
+    
 
     ldi 0 0x0000
 
@@ -48,6 +50,7 @@ try_display
     ld 1 1
     sub 1 1 0
     jz poll_PB1
+    st 1 0
     call PROC_display
 
 poll_PB1
@@ -108,9 +111,7 @@ equals
     jz number_equals_2
     mov 0 3
     mov 1 2
-    push 6
     call PROC_calculate
-    inc 7
     mov 3 0
     mov 5 0
     ldi 2 0x0000
@@ -139,14 +140,14 @@ operator
     jz change_operator
 
 subcalculation
-    st 6 0
-    push 1
+    mov 6 0
     mov 0 3
     mov 1 2
     call PROC_calculate
-    inc 7
     mov 3 0
     mov 5 0
+    ldi 1 operation
+    st 1 6
     ldi 2 0x0000
     ldi 4 0x0000
     jmp main_loop
@@ -169,10 +170,8 @@ PROC_calculate
     push 2
     push 3
 
-    ldi 3 0x0002
-    add 7 7 3
-    ld 2 7
-    sub 7 7 3
+    ldi 2 operation
+    ld 2 2
 
     ldi 3 0x000F
     sub 3 3 2
@@ -321,11 +320,12 @@ div_loop_prep
     
 div_loop
     shl 0 0 2
-    sub 6 3 1
-    and 6 6 5
-    jz div_loop_1
     inc 0
     sub 1 1 3
+    and 6 1 5
+    jz div_loop_1
+    dec 0
+    add 1 1 3
 div_loop_1
     shr 3 3 2
     dec 4
@@ -428,9 +428,6 @@ ret
 PROC_display
     push 2
     push 3
-
-    ldi 1 data_displayed
-    st 1 0
 
     ldi 1 0x000A
     call PROC_unsigned_div_and_mod

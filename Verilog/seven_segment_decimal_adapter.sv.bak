@@ -1,0 +1,52 @@
+module seven_segment_display(clk,data,gnds,display);
+input logic clk;
+input logic [15:0] data;
+output logic [3:0] gnds;
+output logic [6:0] display;
+
+logic [15:0] seg_switch_clk;
+logic [1:0] current_segment;
+
+always_ff @(posedge clk)
+begin
+	seg_switch_clk <= seg_switch_clk + 1;
+end
+
+always_ff @(posedge seg_switch_clk[15])
+begin
+	gnds <= {gnds[2:0], gnds[3]};
+	current_segment <= current_segment + 1;
+end
+
+always_comb
+begin
+	//order is a-f-b-e-d-c-g
+    case(data[current_segment])
+        0  : display = 7'b1111110;
+        1  : display = 7'b0010010;
+        2  : display = 7'b1011101;
+        3  : display = 7'b1010111;
+        4  : display = 7'b0110011;
+        5  : display = 7'b1100111;
+        6  : display = 7'b1101111;
+        7  : display = 7'b1010010;
+        8  : display = 7'b1111111;
+        9  : display = 7'b1110111;
+        10 : display = 7'b1111011;
+        11 : display = 7'b0101111;
+        12 : display = 7'b1101100;
+        13 : display = 7'b0011111;
+        14 : display = 7'b1101101;
+        15 : display = 7'b1101001;
+        default display=7'b1111111;
+    endcase
+end
+
+initial
+begin
+	gnds = 4'b1110;
+	current_segment = 0;
+	seg_switch_clk = 0;
+end
+
+endmodule

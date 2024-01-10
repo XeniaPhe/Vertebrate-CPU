@@ -400,10 +400,13 @@ int main(int argc, char *argv[])
         fclose(fp);
 
         fp = fopen("program","w");
-
+        FILE* fp1 = fopen("program.txt","w");
+        
         fprintf(fp,"v2.0 raw\n");
-        for (i=0;i<counter+dataarea;i++)
+        for (i=0;i<counter+dataarea;i++){
             fprintf(fp,"%04x\n",program[i]);
+            fprintf(fp1,"%04x\n",program[i]);
+        }
         
         fclose(fp);
 
